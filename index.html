@@ -1,32 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Boss AI</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Boss AI – Visual automation powered by you." />
-    <meta property="og:title" content="Boss AI" />
-    <meta property="og:description" content="Visual automation platform based on n8n." />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
-    <link rel="icon" href="https://yourdomain.com/favicon.ico" />
-    <style>
-      body {
-        margin: 0;
-        font-family: 'Orbitron', sans-serif;
-        background-color: #000;
-        color: #00bfff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      h1 {
-        text-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Boss AI is loading...</h1>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Boss AI - UI Test</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #00bfff;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      text-shadow: 0 0 5px #00bfff;
+    }
+    #canvas {
+      border: 1px solid #00bfff;
+      width: 95vw;
+      height: 80vh;
+      margin: 20px auto;
+      background-color: #111;
+      position: relative;
+    }
+    .node {
+      width: 120px;
+      height: 60px;
+      background: #222;
+      color: #00bfff;
+      border: 1px solid #00bfff;
+      border-radius: 8px;
+      position: absolute;
+      padding: 10px;
+      cursor: move;
+      box-shadow: 0 0 5px #00bfff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Boss AI Visual UI Test</h1>
+  <div id="canvas">
+    <div class="node" style="top: 20px; left: 20px;">🧠 Manager</div>
+    <div class="node" style="top: 120px; left: 180px;">✍️ Script Writer</div>
+    <div class="node" style="top: 220px; left: 80px;">🔊 Voiceover</div>
+  </div>
+
+  <script>
+    const nodes = document.querySelectorAll('.node');
+    nodes.forEach(node => {
+      node.onmousedown = function (e) {
+        const shiftX = e.clientX - node.getBoundingClientRect().left;
+        const shiftY = e.clientY - node.getBoundingClientRect().top;
+        node.style.zIndex = 1000;
+        function moveAt(pageX, pageY) {
+          node.style.left = pageX - shiftX + 'px';
+          node.style.top = pageY - shiftY + 'px';
+        }
+        function onMouseMove(e) {
+          moveAt(e.pageX, e.pageY);
+        }
+        document.addEventListener('mousemove', onMouseMove);
+        node.onmouseup = function () {
+          document.removeEventListener('mousemove', onMouseMove);
+          node.onmouseup = null;
+        };
+      };
+      node.ondragstart = () => false;
+    });
+  </script>
+</body>
 </html>
