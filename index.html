@@ -2,71 +2,427 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Boss AI - UI Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boss AI - Automation Platform</title>
+  <link rel="icon" type="image/png" href="/favicon-boss-ai.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <!-- n8n Core Styles (will be overridden by our theme) -->
+  <link rel="stylesheet" href="/css/app.css" />
+  
   <style>
+    /* Boss AI Theme for n8n Integration */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+    /* CSS Custom Properties for Boss AI Theme */
+    :root {
+      --boss-ai-primary: #00bfff;
+      --boss-ai-secondary: #0080ff;
+      --boss-ai-accent: #00ffff;
+      --boss-ai-dark: #000000;
+      --boss-ai-dark-2: #111111;
+      --boss-ai-dark-3: #222222;
+      --boss-ai-glow: 0 0 10px var(--boss-ai-primary);
+      --boss-ai-font: 'Orbitron', monospace;
+    }
+
+    /* Global Overrides */
+    * {
+      font-family: var(--boss-ai-font) !important;
+    }
+
     body {
+      background: var(--boss-ai-dark) !important;
+      color: var(--boss-ai-primary) !important;
       margin: 0;
-      font-family: 'Orbitron', sans-serif;
-      background: #000;
-      color: #00bfff;
+      padding: 0;
     }
-    h1 {
-      text-align: center;
-      margin-top: 20px;
-      text-shadow: 0 0 5px #00bfff;
+
+    /* Boss AI Header */
+    .boss-ai-header {
+      background: linear-gradient(135deg, var(--boss-ai-dark-2), var(--boss-ai-dark-3));
+      border-bottom: 2px solid var(--boss-ai-primary);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10000;
+      box-shadow: var(--boss-ai-glow);
     }
-    #canvas {
-      border: 1px solid #00bfff;
-      width: 95vw;
-      height: 80vh;
-      margin: 20px auto;
-      background-color: #111;
+
+    .boss-ai-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .boss-ai-logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .boss-ai-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--boss-ai-primary);
+      text-shadow: var(--boss-ai-glow);
+    }
+
+    .boss-ai-tagline {
+      font-size: 14px;
+      color: var(--boss-ai-secondary);
+      font-weight: 400;
+    }
+
+    /* Loading Screen */
+    .boss-ai-loading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 60vh;
+      color: var(--boss-ai-primary);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--boss-ai-dark-3);
+      border-top: 3px solid var(--boss-ai-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Boss AI Footer */
+    .boss-ai-footer {
+      background: var(--boss-ai-dark-2);
+      border-top: 1px solid var(--boss-ai-primary);
+      padding: 10px 20px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .boss-ai-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--boss-ai-primary);
+      animation: pulse 2s infinite;
+    }
+
+    .status-indicator.executing {
+      background: #ff6b35;
+      animation: pulse 0.5s infinite;
+    }
+
+    .status-indicator.online {
+      background: #00ff00;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Main App Container */
+    #app {
+      min-height: calc(100vh - 120px);
+      background: var(--boss-ai-dark) !important;
+      padding-bottom: 50px;
+    }
+
+    /* n8n Component Overrides */
+    .n8n-sidebar, .sidebar, [class*="sidebar"] {
+      background: var(--boss-ai-dark-2) !important;
+      border-right: 2px solid var(--boss-ai-primary) !important;
+      color: var(--boss-ai-primary) !important;
+    }
+
+    .n8n-canvas, .canvas, .workflow-canvas, [class*="canvas"] {
+      background: var(--boss-ai-dark) !important;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(0, 191, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 191, 255, 0.1) 0%, transparent 50%);
+    }
+
+    .n8n-node, .node-default, .workflow-node, [class*="node"]:not(.boss-ai-loading):not(.boss-ai-header):not(.boss-ai-footer) {
+      background: var(--boss-ai-dark-3) !important;
+      border: 2px solid var(--boss-ai-primary) !important;
+      border-radius: 8px !important;
+      color: var(--boss-ai-primary) !important;
+      box-shadow: var(--boss-ai-glow) !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .n8n-node:hover, .node-default:hover, .workflow-node:hover, [class*="node"]:hover {
+      box-shadow: 0 0 20px var(--boss-ai-primary) !important;
+      transform: scale(1.05) !important;
+    }
+
+    .boss-ai-enhanced {
       position: relative;
+      overflow: visible;
     }
-    .node {
-      width: 120px;
-      height: 60px;
-      background: #222;
-      color: #00bfff;
-      border: 1px solid #00bfff;
-      border-radius: 8px;
+
+    .boss-ai-enhanced::before {
+      content: '';
       position: absolute;
-      padding: 10px;
-      cursor: move;
-      box-shadow: 0 0 5px #00bfff;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, var(--boss-ai-primary), var(--boss-ai-accent));
+      border-radius: 10px;
+      z-index: -1;
+      opacity: 0.3;
+      animation: borderGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes borderGlow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+
+    .n8n-connection, .connection-line, [class*="connection"] {
+      stroke: var(--boss-ai-primary) !important;
+      stroke-width: 3px !important;
+      filter: drop-shadow(0 0 5px var(--boss-ai-primary)) !important;
+    }
+
+    .n8n-panel, .panel, .modal, [class*="panel"], [class*="modal"] {
+      background: var(--boss-ai-dark-2) !important;
+      border: 1px solid var(--boss-ai-primary) !important;
+      color: var(--boss-ai-primary) !important;
+      border-radius: 8px !important;
+      box-shadow: var(--boss-ai-glow) !important;
+    }
+
+    .n8n-button, .btn, button, [class*="button"] {
+      background: var(--boss-ai-dark-3) !important;
+      border: 1px solid var(--boss-ai-primary) !important;
+      color: var(--boss-ai-primary) !important;
+      border-radius: 4px !important;
+      font-family: var(--boss-ai-font) !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .n8n-button:hover, .btn:hover, button:hover, [class*="button"]:hover {
+      background: var(--boss-ai-primary) !important;
+      color: var(--boss-ai-dark) !important;
+      box-shadow: var(--boss-ai-glow) !important;
+    }
+
+    .n8n-input, .input, input, textarea, select, [class*="input"] {
+      background: var(--boss-ai-dark-3) !important;
+      border: 1px solid var(--boss-ai-primary) !important;
+      color: var(--boss-ai-primary) !important;
+      border-radius: 4px !important;
+      font-family: var(--boss-ai-font) !important;
+    }
+
+    .n8n-input:focus, .input:focus, input:focus, textarea:focus, select:focus, [class*="input"]:focus {
+      border-color: var(--boss-ai-accent) !important;
+      box-shadow: 0 0 5px var(--boss-ai-accent) !important;
+      outline: none !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--boss-ai-primary) !important;
+      text-shadow: 0 0 5px var(--boss-ai-primary) !important;
+    }
+
+    .n8n-text, .text, p, span, [class*="text"] {
+      color: var(--boss-ai-primary) !important;
+    }
+
+    .n8n-navigation, .navigation, nav, [class*="nav"] {
+      background: var(--boss-ai-dark-2) !important;
+      border-bottom: 1px solid var(--boss-ai-primary) !important;
+    }
+
+    .n8n-navigation a, .navigation a, nav a, [class*="nav"] a {
+      color: var(--boss-ai-primary) !important;
+      text-decoration: none !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .n8n-navigation a:hover, .navigation a:hover, nav a:hover, [class*="nav"] a:hover {
+      color: var(--boss-ai-accent) !important;
+      text-shadow: 0 0 5px var(--boss-ai-accent) !important;
+    }
+
+    .n8n-success, .success, [class*="success"] {
+      color: #00ff00 !important;
+      text-shadow: 0 0 5px #00ff00 !important;
+    }
+
+    .n8n-error, .error, [class*="error"] {
+      color: #ff6b35 !important;
+      text-shadow: 0 0 5px #ff6b35 !important;
+    }
+
+    .n8n-warning, .warning, [class*="warning"] {
+      color: #ffff00 !important;
+      text-shadow: 0 0 5px #ffff00 !important;
+    }
+
+    @media (max-width: 768px) {
+      .boss-ai-header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+      }
+      
+      .boss-ai-title {
+        font-size: 20px;
+      }
+      
+      .boss-ai-tagline {
+        font-size: 12px;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--boss-ai-dark-2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--boss-ai-primary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--boss-ai-accent);
     }
   </style>
 </head>
 <body>
-  <h1>🚀 Boss AI Visual UI Test</h1>
-  <div id="canvas">
-    <div class="node" style="top: 20px; left: 20px;">🧠 Manager</div>
-    <div class="node" style="top: 120px; left: 180px;">✍️ Script Writer</div>
-    <div class="node" style="top: 220px; left: 80px;">🔊 Voiceover</div>
+  <!-- Boss AI Branding Header -->
+  <header class="boss-ai-header">
+    <div class="boss-ai-logo">
+      <img src="/logo-boss-ai.png" alt="Boss AI" />
+      <span class="boss-ai-title">Boss AI</span>
+    </div>
+    <div class="boss-ai-tagline">Automation Intelligence Platform</div>
+  </header>
+
+  <!-- Vue Mount Point for n8n Application -->
+  <div id="app">
+    <!-- n8n Vue components will be injected here -->
+    <div class="boss-ai-loading">
+      <div class="loading-spinner"></div>
+      <p>Initializing Boss AI...</p>
+    </div>
   </div>
 
+  <!-- Boss AI Footer -->
+  <footer class="boss-ai-footer">
+    <div class="boss-ai-status">
+      <span class="status-indicator"></span>
+      <span class="status-text">System Online</span>
+    </div>
+  </footer>
+
+  <!-- n8n Application Scripts -->
+  <script src="/js/app.js"></script>
+  
+  <!-- Boss AI Enhancement Scripts -->
   <script>
-    const nodes = document.querySelectorAll('.node');
-    nodes.forEach(node => {
-      node.onmousedown = function (e) {
-        const shiftX = e.clientX - node.getBoundingClientRect().left;
-        const shiftY = e.clientY - node.getBoundingClientRect().top;
-        node.style.zIndex = 1000;
-        function moveAt(pageX, pageY) {
-          node.style.left = pageX - shiftX + 'px';
-          node.style.top = pageY - shiftY + 'px';
+    // Initialize Boss AI enhancements after Vue loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait for Vue to mount
+      const checkVueMount = setInterval(() => {
+        if (window.Vue && document.querySelector('#app > div:not(.boss-ai-loading)')) {
+          clearInterval(checkVueMount);
+          initializeBossAIEnhancements();
         }
-        function onMouseMove(e) {
-          moveAt(e.pageX, e.pageY);
-        }
-        document.addEventListener('mousemove', onMouseMove);
-        node.onmouseup = function () {
-          document.removeEventListener('mousemove', onMouseMove);
-          node.onmouseup = null;
-        };
-      };
-      node.ondragstart = () => false;
+      }, 100);
     });
+
+    function initializeBossAIEnhancements() {
+      // Hide loading screen
+      const loadingScreen = document.querySelector('.boss-ai-loading');
+      if (loadingScreen) {
+        loadingScreen.style.display = 'none';
+      }
+
+      // Add Boss AI specific functionality
+      addBossAIAnimations();
+      enhanceWorkflowNodes();
+      updateStatusIndicator();
+    }
+
+    function addBossAIAnimations() {
+      // Add pulsing effect to active nodes
+      const observer = new MutationObserver(() => {
+        document.querySelectorAll('.node-default, .n8n-node, [class*="node"]').forEach(node => {
+          if (!node.classList.contains('boss-ai-enhanced')) {
+            node.classList.add('boss-ai-enhanced');
+          }
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    function enhanceWorkflowNodes() {
+      // Add Boss AI glow effects to workflow connections
+      const style = document.createElement('style');
+      style.textContent = `
+        .connection-line, .n8n-connection, [class*="connection"] {
+          filter: drop-shadow(0 0 2px #00bfff) !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function updateStatusIndicator() {
+      const statusIndicator = document.querySelector('.status-indicator');
+      const statusText = document.querySelector('.status-text');
+      
+      if (statusIndicator && statusText) {
+        statusIndicator.classList.add('online');
+        
+        // Monitor n8n execution status
+        setInterval(() => {
+          const isExecuting = document.querySelector('.n8n-executing, [class*="executing"]');
+          if (isExecuting) {
+            statusIndicator.classList.add('executing');
+            statusText.textContent = 'Executing Workflow';
+          } else {
+            statusIndicator.classList.remove('executing');
+            statusText.textContent = 'System Online';
+          }
+        }, 1000);
+      }
+    }
   </script>
 </body>
 </html>
