@@ -1,4 +1,4 @@
-name: Auto Build n8n for Render
+name: Auto Build and Push n8n for Render
 
 on:
   push:
@@ -13,27 +13,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node and PNPM
+      - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install full dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Build project
+      - name: Build the project
         run: pnpm run build
+
+      - name: Install CLI dependencies
+        run: pnpm install --filter=cli --prod
 
       - name: Commit built files
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
-          git commit -m "Auto-build: compiled files" || echo "No changes"
+          git commit -m "Auto: build & install for Render" || echo "No changes"
           git push
