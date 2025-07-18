@@ -4,7 +4,8 @@
   "description": "n8n CLI",
   "main": "index.js",
   "scripts": {
-    "start:default": "cd bin && ./n8n"
+    "start": "cd bin && node n8n.js",
+    "start:default": "cd bin && node n8n.js"
   },
   "dependencies": {
     "semver": "^7.5.4"
