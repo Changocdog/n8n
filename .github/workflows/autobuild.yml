@@ -13,30 +13,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup PNPM
+      - name: Setup Node.js (v22.16.0)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+          cache: 'pnpm'
+
+      - name: Setup PNPM (v10.12.1)
         uses: pnpm/action-setup@v2
         with:
           version: 10.12.1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.16.0
-          cache: 'pnpm'
+      - name: Verify versions
+        run: |
+          node -v
+          pnpm -v
 
-      - name: Install full dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build the project
+      - name: Build project
         run: pnpm run build
 
-      - name: Install CLI dependencies
-        run: pnpm install --filter=cli --prod
-
-      - name: Commit built files
+      - name: Final push commit
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
-          git commit -m "Auto: build & install for Render" || echo "No changes"
+          git commit -m "✅ Auto-build for Render deploy" || echo "No changes to commit"
           git push
