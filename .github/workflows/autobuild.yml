@@ -1,4 +1,4 @@
-name: Build and Deploy n8n
+name: CI
 
 on:
   push:
@@ -12,18 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node.js 20.x
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20.10.0'
-          cache: 'pnpm'
+          node-version: 20
 
       - name: Setup PNPM
-        run: |
-          npm install -g pnpm@8.6.12
+        run: npm install -g pnpm@8.6.12
 
-      - name: Install Dependencies
+      - name: Install deps
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build Project
+      - name: Build
         run: pnpm run build
