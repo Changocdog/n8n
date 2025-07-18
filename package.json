@@ -53,6 +53,9 @@
     "webhook": "./packages/cli/bin/n8n webhook",
     "worker": "./packages/cli/bin/n8n worker"
   },
+  "dependencies": {
+    "run-script-os": "^1.0.7"
+  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
     "@n8n/eslint-config": "workspace:*",
@@ -75,7 +78,6 @@
     "npm-run-all2": "^7.0.2",
     "p-limit": "^3.1.0",
     "rimraf": "^5.0.1",
-    "run-script-os": "^1.0.7",
     "supertest": "^7.1.1",
     "ts-jest": "^29.1.1",
     "tsc-alias": "^1.8.10",
@@ -85,9 +87,7 @@
     "zx": "^8.1.4"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "sqlite3"
-    ],
+    "onlyBuiltDependencies": ["sqlite3"],
     "overrides": {
       "@azure/identity": "^4.3.0",
       "@types/node": "^20.17.50",
