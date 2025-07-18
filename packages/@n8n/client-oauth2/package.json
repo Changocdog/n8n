@@ -1,29 +1,26 @@
 {
-  "name": "@n8n/client-oauth2",
-  "version": "0.27.0",
+  "name": "n8n",
+  "version": "1.103.0",
+  "description": "n8n CLI",
+  "main": "index.js",
   "scripts": {
-    "clean": "rimraf dist .turbo",
-    "dev": "pnpm watch",
-    "typecheck": "tsc --noEmit",
+    "start": "run-script-os",
+    "start:default": "cd bin && ./n8n",
+    "start:windows": "cd bin && n8n",
+    "worker": "n8n worker",
+    "webhook": "n8n webhook",
     "build": "tsc -p tsconfig.build.json",
-    "format": "biome format --write src test",
-    "format:check": "biome ci src test",
-    "lint": "eslint . --quiet",
-    "lintfix": "eslint . --fix",
-    "watch": "tsc -p tsconfig.build.json --watch",
-    "test": "jest",
-    "test:dev": "jest --watch"
+    "dev": "nodemon --watch ../../packages --exec \"n8n\""
   },
-  "main": "dist/index.js",
-  "module": "src/index.ts",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist/**/*"
-  ],
   "dependencies": {
-    "axios": "catalog:"
+    "semver": "^7.5.4"
   },
   "devDependencies": {
-    "@n8n/typescript-config": "workspace:*"
+    "@types/node": "*",
+    "ts-node": "^10.9.1",
+    "typescript": "*"
+  },
+  "engines": {
+    "node": ">=22.16.0"
   }
 }
